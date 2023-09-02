@@ -1,0 +1,45 @@
+trigger:
+- Arya
+
+pool:
+  name: "agent-pool-name" # Name of the agent pool on Azure
+
+variables:
+- group: Variables-Group-Name # Name of the variables group on Azure
+
+stages:
+- stage: RunPacker
+  jobs:
+  - job: InstallPacker
+    steps:
+    - task: Packer@1
+      displayName: 'Packer Init'
+      inputs:
+        connectedServiceType: 'azure'
+        azureSubscription: 'subscription-name'
+        templatePath: 'image.pkr.hcl'
+        command: 'init'
+    - task: Packer@1
+      displayName: 'Packer Version'
+      inputs:
+        connectedServiceType: 'azure'
+        azureSubscription: 'subscription-name'
+        templatePath: 'image.pkr.hcl'
+        command: 'version'
+    - task: Packer@1
+      displayName: 'Packer Validate'
+      inputs:
+        connectedServiceType: 'azure'
+        azureSubscription: 'subscription-name'
+        templatePath: 'image.pkr.hcl'
+        command: 'validate'
+        variables-file: 'image_variables.pkrvars.hcl'
+    - task: Packer@1
+      displayName: 'Packer Build'
+      inputs:
+        connectedServiceType: 'azure'
+        azureSubscription: 'subscription-name'
+        templatePath: 'image.pkr.hcl'
+        command: 'build'
+        variables-file: 'image_variables.pkrvars.hcl'
+        options: '-on-error=ask'

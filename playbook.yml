@@ -1,0 +1,10 @@
+- name: Create a text file
+  hosts: all
+  become: yes
+
+  tasks: 
+    -name: create a text file named test.txt
+    file:
+    path: "test.txt"
+    state: touch
+    displayName: "Adding a text file"
